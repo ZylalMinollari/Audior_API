@@ -1,0 +1,91 @@
+controllers:
+    resource: ../src/Controller/
+    type: attribute
+# Auditor routes API
+app_auditor_api_register:
+    path: 'api/auditor/register'
+    controller: App\Controller\Api\AuditorApiController::register
+    methods: ['GET','POST']
+    
+app_auditor_api_login:
+    path: api/auditor/login
+    controller: App\Controller\Api\AuditorApiController::login
+    methods: ['GET', POST]
+
+app_auditor_api_logout:
+    path: api/auditor/logout
+    controller: App\Controller\Api\AuditorApiController::logout
+    methods: ['GET', POST]
+
+app_auditor_api_index: 
+    path: api/auditor/index
+    controller: App\Controller\Api\AuditorApiController::index
+    methods: ['GET']
+
+app_auditor_api_show:
+    path: 'api/auditor/show/{id}'
+    controller: App\Controller\Api\AuditorApiController::show
+    methods: ['GET']
+
+app_auditor_api_edit:
+    path: 'api/auditor/{id}/edit'
+    controller: App\Controller\Api\AuditorApiController::edit
+    methods: ['GET','POST']
+
+app_auditor_api_delete:
+    path: 'api/auditor/delete/{id}'
+    controller: App\Controller\Api\AuditorApiController::delete
+    methods: ['DELETE']
+
+# Job routes Api
+app_job_api_new:
+    path: 'api/job/new'
+    controller: App\Controller\Api\JobApiController::new
+    methods: ['GET', POST]
+
+app_job_api_index:
+    path: 'api/job/index'
+    controller:  App\Controller\Api\JobApiController::index
+    methods: ['GET']
+
+app_job_api_show:
+    path: 'api/job/show/{id}'
+    controller:  App\Controller\Api\JobApiController::show
+    methods: ['GET']
+
+app_job_api_edit:
+    path: 'api/job/{id}/edit'
+    controller:  App\Controller\Api\JobApiController::edit
+    methods: ['GET', 'POST']
+
+app_job_api_delete:
+    path: 'api/job/delete/{id}'
+    controller: App\Controller\Api\JobApiController::delete
+    methods: ['DELETE']
+
+#Schedule routes Api
+
+app_schedule_api_new:
+    path: 'api/schedule/new'
+    controller: App\Controller\Api\ScheduleApiController::new
+    methods: ['GET','POST']
+
+app_schedule_api_index:
+    path: 'api/schedule/index'
+    controller: App\Controller\Api\ScheduleApiController::index
+    methods: ['GET']
+    
+app_schedule_api_show:
+    path: 'api/schedule/show/{id}'
+    controller: App\Controller\Api\ScheduleApiController::show
+    methods: ['GET']
+
+app_schedule_api_edit:
+    path: 'api/schedule/{id}/edit'
+    controller: App\Controller\Api\ScheduleApiController::edit
+    methods: ['GET', 'POST']
+
+app_schedule_api_delete:
+    path: 'api/schedule/delete/{id}'
+    controller: App\Controller\Api\ScheduleApiController::delete
+    methods: ['DELETE']     
