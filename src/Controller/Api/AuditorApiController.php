@@ -122,8 +122,13 @@ class AuditorApiController extends AbstractController
         return new JsonResponse($auditorData);
     }
     #[Route('/show/{id}', name: 'app_auditor_api_show', methods: ['GET'])]
-    public function show(int $id, EntityManagerInterface $entityManager): JsonResponse
+    public function show(string $id, EntityManagerInterface $entityManager): JsonResponse
     {
+        $id = intval($id);
+        if ($id <= 0) {
+            throw $this->createNotFoundException('Invalid auditor ID');
+        }
+
         $auditor = $entityManager->getRepository(Auditor::class)->find($id);
 
         if (!$auditor) {
@@ -141,8 +146,12 @@ class AuditorApiController extends AbstractController
 
 
     #[Route('/{id}/edit', name: 'app_auditor_api_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, int $id, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, string $id, EntityManagerInterface $entityManager): Response
     {
+        $id = intval($id);
+        if ($id <= 0) {
+            throw $this->createNotFoundException('Invalid auditor ID');
+        }
 
         $auditor = $entityManager->getRepository(Auditor::class)->find($id);
 
@@ -203,8 +212,13 @@ class AuditorApiController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: 'app_auditor_api_delete', methods: ['DELETE'])]
-    public function delete(int $id, EntityManagerInterface $entityManager, SessionInterface $session): Response
+    public function delete(string $id, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
+        $id = intval($id);
+        if ($id <= 0) {
+            throw $this->createNotFoundException('Invalid auditor ID');
+        }
+
         $loggedInAuditorId = $session->get('auditor_id');
 
         if (!$loggedInAuditorId) {

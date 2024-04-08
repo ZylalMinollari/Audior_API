@@ -34,6 +34,16 @@ class ScheduleApiController extends AbstractController
             return new JsonResponse(['error' => 'Job not found'], Response::HTTP_NOT_FOUND);
         }
 
+        $existingSchedule = $entityManager->getRepository(Schedule::class)->findOneBy([
+            'auditor' => $auditor,
+            'job' => $job
+        ]);
+
+        if ($existingSchedule) {
+
+            return new JsonResponse(['error' => 'Auditor already has this job assigned'], Response::HTTP_CONFLICT);
+        }
+
         $expectedCompletionDate = $job->getShouldBeFinished();
 
         $expectedCompletionDate->setTimezone(new \DateTimeZone($auditor->getTimezone()->format('P')));
@@ -110,8 +120,15 @@ class ScheduleApiController extends AbstractController
     }
 
     #[Route('show/{id}', name: 'app_schedule_api_show', methods: ['GET'])]
-    public function show(int $id, EntityManagerInterface $entityManager): JsonResponse
+    public function show(string $id, EntityManagerInterface $entityManager): JsonResponse
     {
+
+        $id = intval($id);
+        if ($id <= 0) {
+            throw $this->createNotFoundException('Invalid schedule ID');
+        }
+
+
         $schedule = $entityManager->getRepository(Schedule::class)->find($id);
 
         if (!$schedule) {
@@ -131,8 +148,13 @@ class ScheduleApiController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_schedule_api_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, int $id, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, string $id, EntityManagerInterface $entityManager): Response
     {
+        $id = intval($id);
+        if ($id <= 0) {
+            throw $this->createNotFoundException('Invalid schedule ID');
+        }
+
         $schedule = $entityManager->getRepository(Schedule::class)->find($id);
         if (!$schedule) {
             throw $this->createNotFoundException('No schedule found');
@@ -197,8 +219,13 @@ class ScheduleApiController extends AbstractController
     }
 
     #[Route('delete/{id}', name: 'app_schedule_api_delete', methods: ['DELETE'])]
-    public function delete(int $id, EntityManagerInterface $entityManager): Response
-    {
+    public function delete(string $id, EntityManagerInterface $entityManager): Response
+    {   
+        $id = intval($id);
+        if ($id <= 0) {
+            throw $this->createNotFoundException('Invalid schedule ID');
+        }
+
         $schedule = $entityManager->getRepository(Schedule::class)->find($id);
 
         if (!$schedule) {
