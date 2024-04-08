@@ -73,8 +73,13 @@ class JobApiController extends AbstractController
 
     #[Route('/show/{id}', name: 'app_job_api_show', methods: ['GET'])]
 
-    public function show(int $id, EntityManagerInterface $entityManager): JsonResponse
+    public function show(string $id, EntityManagerInterface $entityManager): JsonResponse
     {
+        $id = intval($id);
+        if ($id <= 0) {
+            throw $this->createNotFoundException('Invalid job ID');
+        }
+
         $job = $entityManager->getRepository(Job::class)->find($id);
 
         if (!$job) {
@@ -95,8 +100,13 @@ class JobApiController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_job_api_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, int $id, EntityManagerInterface $entityManager): JsonResponse
+    public function edit(Request $request, string $id, EntityManagerInterface $entityManager): JsonResponse
     {
+        $id = intval($id);
+        if ($id <= 0) {
+            throw $this->createNotFoundException('Invalid job ID');
+        }
+
         $job = $entityManager->getRepository(Job::class)->find($id);
 
         if (!$job) {
@@ -108,7 +118,7 @@ class JobApiController extends AbstractController
             'description' => $job->getDescription(),
             'name' => $job->getName(),
             'createdAt' => $job->getCreatedAt()->format('Y-m-d H:i:s'),
-            'should_be_finished' => $job->getAssessment(),
+            'should_be_finished' => $job->getShouldBeFinished()->format('Y-m-d H:i:s'),
             'assessment' => $job->getAssessment()
         ];
 
@@ -121,20 +131,20 @@ class JobApiController extends AbstractController
         if ($createdAt instanceof \DateTime) {
             $createdAt = $createdAt->format('Y-m-d\TH:i:sP');
         }
+        if (!is_bool($createdAt)) {
 
-        $createdAtDateTime = \DateTime::createFromFormat('Y-m-d\TH:i:sP', $createdAt);
-
-        $job->setCreatedAt($createdAtDateTime);
+            $job->setCreatedAt(new \DateTime($createdAt));
+        }
 
 
         $shouldFinished = $data['should_be_finished'] ?? $orginalValues['should_be_finished'];
         if ($shouldFinished instanceof \DateTime) {
             $shouldFinished = $shouldFinished->format('Y-m-d\TH:i:sP');
         }
-        var_dump($shouldFinished);
-        die;
-        $shouldFinishedDateTime = \DateTime::createFromFormat('Y-m-d\TH:i:sP', $shouldFinished);
-        $job->setShouldBeFinished($shouldFinishedDateTime);
+
+        if(!is_bool($shouldFinished)) { 
+            $job->setShouldBeFinished(new \DateTime($shouldFinished));
+        }
 
         $job->setAssessment($data['assessment'] ?? $orginalValues['assessment']);
 
@@ -158,8 +168,13 @@ class JobApiController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: 'app_job_api_delete', methods: ['DELETE'])]
-    public function delete(int $id, EntityManagerInterface $entityManager): JsonResponse
+    public function delete(string $id, EntityManagerInterface $entityManager): JsonResponse
     {
+
+        $id = intval($id);
+        if ($id <= 0) {
+            throw $this->createNotFoundException('Invalid job ID');
+        }
 
         $job = $entityManager->getRepository(Job::class)->find($id);
 
